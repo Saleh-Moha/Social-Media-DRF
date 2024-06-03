@@ -1,0 +1,40 @@
+*Users App:
+    --models:
+        -> custom user model which allow user to signup with the following:
+            - email=> which is an unique field
+            - username=> also an unique field
+            - first name=> not unique but not null
+            - socend name=> not unique but not null
+            - date of birth=> not unique but not null
+            - bio=> not unique and can be null
+            - location=> not unique and can be null
+            - profile picture = can also be null
+    
+    --views:
+        -- using class based view ==> ginircs to retrive the data of the user 
+    
+    --urls:
+        -> using one endpoint:
+            - /user-profile/{username} => to get the data of the user
+    
+    -- Serializers:
+        -> containing tow classes:
+            - CustomUserCreateSerializer => used py djoser to signup user
+            - CustomUserSerializer=> all apps use it to show data of the user on comments,likes and profile 
+    
+    -- permissions:
+        -> create a custom permission to allow only user to edit and delete his own data and others can only show the data
+
+        ____________________________________________
+
+*Authentication:
+___________________
+
+    --Using Djoser To Signup Or Signin User Using The Custom User Serializer.
+        -> endpoints:
+            - /auth/users/ => to signup
+            - /auth/token/login/ => to signin and generate token
+
+    -- Using DRF => authtoken To Generate Tokens.
+        ________________________________________________
+

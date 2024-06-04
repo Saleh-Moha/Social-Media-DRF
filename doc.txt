@@ -38,3 +38,42 @@ ___________________
     -- Using DRF => authtoken To Generate Tokens.
         ________________________________________________
 
+* Post App:
+___________________
+    
+    --models:
+        -> Written Posts Model:
+            - user
+            - content of the post => cannot be null
+            - image => can be null
+            - video => can be null
+            - date and time of post => auto now  
+        -> Shared Post Model:
+            - user
+            - content of the post => cannot be null
+            - date and time of post => auto now  
+            - shared from => show the main post and it owner
+
+
+    --views:
+        -- using class based view ==> ginircs to 
+            - allow user to post 
+            - allow user to share Posts
+            - allow only owner to edit thier own post
+            - allow only owner to edit thier own shared post
+    
+    --urls:
+        -> using four endpoints:
+            /post => allow user to post
+            <str:username>/<int:id>/share => allow user to share posts
+            edit-post/<int:pk> => allow user to edit thier posts
+            edit-sharedpost/<int:pk> => allow user to edit thier shared posts
+    
+    -- Serializers:
+        -> containing tow classes:
+            - WrittenPostsSerializer => dealing with all operations of writting posts
+            - SharedPostsSerializer => dealing with all operations of shared posts
+    
+    -- permissions:
+        -> create a custom permission to allow only user to edit and delete his own data and others can only show the data
+                    ____________________________________________

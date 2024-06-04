@@ -3,7 +3,7 @@ from django.db import models
 
 class CustomUserManager(BaseUserManager):
 
-    def create_user(self, email,username,first_name, last_name,bio,phone_number,location, date_of_birth,profile_photo, password=None, **extra_fields):
+    def create_user(self, email,username,first_name, last_name,bio,phone_number,location, date_of_birth, password=None, **extra_fields):
         if not email:
             raise ValueError('The Email field must be set')
         email = self.normalize_email(email)
@@ -16,7 +16,7 @@ class CustomUserManager(BaseUserManager):
             bio = bio,
             phone_number=phone_number,
             location=location,
-            profile_photo=profile_photo,
+    
             **extra_fields
         )        
         user.set_password(password)

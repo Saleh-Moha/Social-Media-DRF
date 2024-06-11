@@ -77,3 +77,42 @@ ___________________
     -- permissions:
         -> create a custom permission to allow only user to edit and delete his own data and others can only show the data
                     ____________________________________________
+
+
+*Likes App:
+___________________
+    
+    --models:
+        -> Like Written Posts Model:
+            - user
+            - post => extended from Posts App
+        -> Like Shared Post Model:
+            - user
+            - post => extended from Posts App
+
+
+    --views:
+        -- using class based view ==> ginircs to 
+            - allow user to like post (Written,Shared) 
+            - allow user to show the count of likes of specific post and user reacted with it 
+            - allow user to delete a like that he did on a post
+    
+    --urls:
+        -> using six endpoints:
+            like-written-post/<int:id>' => to like a written posts
+            like-written-post-list/<int:id>' => to show count and user who reacted on a written posts
+            like-written-post-delete/<int:pk>' => to allow only owner of the like to delete it
+            like-shared-post/<int:id>' => to like a shared posts
+            like-shared-post-list/<int:id> => to show count and user who reacted on a shared posts
+            like-shared-post-delete/<int:pk> => to allow only owner of the like to delete it
+    
+    -- Serializers:
+        -> containing four classes:
+            - LikeWrittenPostsSerializers => dealing with likes on written posts
+            - LikeSharedPostsSerializers=> dealing with likes on shared posts
+            - LikeCountWrittenpostsSerializer=> show the numbers of users who reacted with this post
+            - LikeCountSharedpostsSerializer=> show the numbers of users who reacted with this post
+    
+    -- permissions:
+        -> create a custom permission to allow only user to edit and delete his own data and others can only show the data
+                    ____________________________________________

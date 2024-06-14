@@ -116,3 +116,43 @@ ___________________
     -- permissions:
         -> create a custom permission to allow only user to edit and delete his own data and others can only show the data
                     ____________________________________________
+
+
+*Comments App:
+___________________
+    
+    --models:
+        -> Comment Written Posts Model:
+            - user
+            - post => extended from Posts App
+            - comment => the comment that will appear in the post
+        -> Comment Shared Post Model:
+            - user
+            - post => extended from Posts App
+            - commment => the comment that will appear in the post
+
+    --views:
+        -- using class based view ==> ginircs to 
+            - allow user to comment on posts (Written,Shared) 
+            - allow user to show the count of comments of specific post and user reacted with it 
+            - allow user to delete a comment that he did on a post
+    
+    --urls:
+        -> using six endpoints:
+            comment-written-post/<int:id>' => to like a written posts
+            comment-written-post-list/<int:id>' => to show count and user who reacted on a written posts
+            comment-written-post-delete/<int:pk>' => to allow only owner of the like to delete it
+            comment-shared-post/<int:id>' => to like a shared posts
+            comment-shared-post-list/<int:id> => to show count and user who reacted on a shared posts
+            comment-shared-post-delete/<int:pk> => to allow only owner of the like to delete it
+    
+    -- Serializers:
+        -> containing four classes:
+            - CommentWrittenPostsSerializers => dealing with likes on written posts
+            - CommentSharedPostsSerializers=> dealing with likes on shared posts
+            - CommentCountWrittenpostsSerializer=> show the numbers of users who reacted with this post
+            - CommentCountSharedpostsSerializer=> show the numbers of users who reacted with this post
+    
+    -- permissions:
+        -> create a custom permission to allow only user to edit and delete his own data and others can only show the data
+                    ____________________________________________ 

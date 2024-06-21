@@ -9,7 +9,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from rest_framework.exceptions import NotFound
 from django.shortcuts import get_object_or_404
-from .permissions import IsOwnerOrReadOnly
+from .permissions import IsOwnerOrReadOnly,IsOwnerPrivate
 from rest_framework.exceptions import NotAuthenticated
 
 
@@ -53,3 +53,53 @@ class EditSharedPosts(generics.RetrieveUpdateDestroyAPIView):
     queryset = Shared_Posts.objects.all()
     serializer_class = SharedPostsSerializer
     permission_classes = [IsOwnerOrReadOnly]
+    
+    
+
+class Written_posts_list(generics.ListAPIView):
+    queryset = Written_Posts.objects.all()
+    serializer_class = WrittenPostsSerializer
+    permission_classes = [IsOwnerPrivate]
+
+    def get_queryset(self):
+        user = self.request.user
+        id = self.kwargs['id']
+        queryset = Written_Posts.objects.filter(user_id=id)
+
+        # If the requesting user is not the owner, filter out private posts
+        if user.id != id:
+            queryset = queryset.filter(is_private=False)
+
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        if not queryset.exists():
+            return Response('no posts for this user', status=status.HTTP_204_NO_CONTENT)
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+
+class Shared_posts_list(generics.ListAPIView):
+    queryset = Shared_Posts.objects.all()
+    serializer_class = SharedPostsSerializer
+    permission_classes = [IsOwnerPrivate]
+
+    def get_queryset(self):
+        user = self.request.user
+        id = self.kwargs['id']
+        queryset =Shared_Posts.objects.filter(user_id=id)
+
+        # If the requesting user is not the owner, filter out private posts
+        if user.id != id:
+            queryset = queryset.filter(is_private=False)
+
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        if not queryset.exists():
+            return Response('no posts for this user', status=status.HTTP_204_NO_CONTENT)
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

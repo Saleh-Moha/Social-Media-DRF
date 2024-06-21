@@ -16,3 +16,12 @@ class IsOwnerOrReadOnly(BasePermission):
         # Write permissions are only allowed for the owner of the object
         return obj.user == request.user
 
+
+from rest_framework.permissions import BasePermission, SAFE_METHODS
+
+class IsOwnerPrivate(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        # Allow read-only access for any request if the object is not private or if the request is from the owner
+        if request.method in SAFE_METHODS:
+            return not obj.is_private or obj.user == request.user
+        return obj.user == request.user

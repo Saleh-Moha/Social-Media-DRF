@@ -3,5 +3,5 @@ from django.urls import path, include
 from .views import *
 
 urlpatterns = [
-    path('user-profile/<str:username>', User_Profile.as_view()),
+    path('user-profile/<int:pk>', User_Profile.as_view()),
 ]

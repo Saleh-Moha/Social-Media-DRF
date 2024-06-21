@@ -15,9 +15,4 @@ from rest_framework.exceptions import NotAuthenticated
 class User_Profile(generics.RetrieveUpdateDestroyAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
-    permission_classes = [IsOwnerOrReadOnly] # => a custom permission to allow only user to edit or delete his own information and allow others to get it
-    
-# gettig object with the unique username instead of pk
-    def get_object(self):
-        name = self.kwargs['username']
-        return get_object_or_404(CustomUser,username=name) 
+    permission_classes = [IsOwnerOrReadOnly]

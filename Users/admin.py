@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
 
-from .models import CustomUser,user_profile
+from .models import CustomUser,user_profile,Follow,Follow_Request
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 
 class UserAdmin(BaseUserAdmin):
@@ -29,6 +29,8 @@ class UserAdmin(BaseUserAdmin):
 
 admin.site.register(CustomUser, UserAdmin)
 admin.site.register(user_profile)
+admin.site.register(Follow)
+admin.site.register(Follow_Request)
 admin.site.unregister(Group)
 
 

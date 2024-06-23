@@ -63,7 +63,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
 
 class user_profile(models.Model):
-
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='user_profile')
     profile_photo = models.ImageField(upload_to='src/usersprofilephotos', blank=True)
     is_private = models.BooleanField(default=False, blank=True, null=False)
@@ -73,3 +72,30 @@ class user_profile(models.Model):
 
     def __str__(self):
         return str(self.user)
+
+
+
+
+class Follow(models.Model):
+    follower = models.ForeignKey(CustomUser, related_name='following', on_delete=models.CASCADE)
+    followed = models.ForeignKey(CustomUser, related_name='followers', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('follower', 'followed')
+
+    def __str__(self):
+        return f"{self.follower.username} follows {self.followed.username}"
+
+
+class Follow_Request(models.Model):
+    requester = models.ForeignKey(CustomUser, related_name='sent_requests', on_delete=models.CASCADE)
+    requested = models.ForeignKey(CustomUser, related_name='received_requests', on_delete=models.CASCADE)
+    status = models.CharField(max_length=10, choices=[('pending', 'Pending'), ('accepted', 'Accepted'), ('rejected', 'Rejected')], default='pending',blank=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('requester', 'requested')
+
+    def __str__(self):
+        return f"{self.requester.username} requested to follow {self.requested.username}"

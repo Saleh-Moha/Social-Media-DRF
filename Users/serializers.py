@@ -1,6 +1,6 @@
 from djoser.serializers import UserCreateSerializer, UserSerializer # type: ignore
 from rest_framework import serializers
-from .models import CustomUser
+from .models import CustomUser,user_profile,Follow,Follow_Request
 
 class CustomUserCreateSerializer(UserCreateSerializer):
     class Meta:
@@ -21,3 +21,44 @@ class CustomUserSerializer(UserSerializer):
     class Meta:
         model = CustomUser
         fields = ('id', 'email','username' ,'first_name', 'last_name', 'date_of_birth')
+
+class UsernameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['username']
+    
+class UserProfileSerializer(serializers.ModelSerializer):
+    user = UsernameSerializer(read_only = True)
+    class Meta:
+        model = user_profile
+        fields = '__all__' 
+        
+
+class FollowSerializer(serializers.ModelSerializer):
+    follower = UsernameSerializer(read_only=True)
+    followed = UsernameSerializer(read_only=True)
+    class Meta:
+        model = Follow
+        fields = ['id','follower','followed','created_at']
+        
+class FollowRequestSerializer(serializers.ModelSerializer):
+    requester = UsernameSerializer(read_only=True)
+    requested = UsernameSerializer(read_only=True)
+
+    class Meta:
+        model = Follow_Request
+        fields = ['id', 'requester', 'requested', 'status', 'created_at']
+        
+
+class Followersserializer(serializers.ModelSerializer):
+    follower = UsernameSerializer(read_only=True)
+    class Meta:
+        model = Follow
+        fields = ['follower']
+        
+
+class Followingserializer(serializers.ModelSerializer):
+    followed = UsernameSerializer(read_only=True)
+    class Meta:
+        model = Follow
+        fields = ['followed']

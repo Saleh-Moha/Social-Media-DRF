@@ -28,11 +28,12 @@ class UsernameSerializer(serializers.ModelSerializer):
         fields = ['username']
     
 class UserProfileSerializer(serializers.ModelSerializer):
-    user = UsernameSerializer(read_only = True)
+    user = UsernameSerializer(read_only=True)
+
     class Meta:
         model = user_profile
-        fields = '__all__' 
-        
+        fields = '__all__'
+      
 
 class FollowSerializer(serializers.ModelSerializer):
     follower = UsernameSerializer(read_only=True)
@@ -42,12 +43,16 @@ class FollowSerializer(serializers.ModelSerializer):
         fields = ['id','follower','followed','created_at']
         
 class FollowRequestSerializer(serializers.ModelSerializer):
-    requester = UsernameSerializer(read_only=True)
-    requested = UsernameSerializer(read_only=True)
+    # requester = UsernameSerializer(read_only=True)
+    # requested = UsernameSerializer(read_only=True)
+    message = serializers.SerializerMethodField()
 
     class Meta:
         model = Follow_Request
-        fields = ['id', 'requester', 'requested', 'status', 'created_at']
+        fields = ['message','id', 'status', 'created_at']
+    
+    def get_message(self, obj):
+        return f"{obj.requester.username} has sent you a follow request"
         
 
 class Followersserializer(serializers.ModelSerializer):
@@ -55,6 +60,9 @@ class Followersserializer(serializers.ModelSerializer):
     class Meta:
         model = Follow
         fields = ['follower']
+
+
+    
         
 
 class Followingserializer(serializers.ModelSerializer):

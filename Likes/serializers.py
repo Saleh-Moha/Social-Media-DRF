@@ -22,10 +22,20 @@ class LikeSharedPostsSerializers(serializers.ModelSerializer):
         model = Like_SharedPosts
         fields = ['id','post','user']
         
-class LikeCountWrittenpostsSerializer(serializers.Serializer):
-    count = serializers.IntegerField()
-    data = LikeWrittenPostsSerializers(many=True)
-    
-class LikeCountSharedpostsSerializer(serializers.Serializer):
-    count = serializers.IntegerField()
-    data = LikeSharedPostsSerializers(many=True)
+class WrittenPostsLikeNotificationSerializer(serializers.ModelSerializer):
+    message = serializers.SerializerMethodField()
+    class Meta:
+        model = Like_Notification_on_WrittenPosts 
+        fields = ['message','id','created_at']
+        
+    def get_message(self,obj):
+            return f'{obj.liker} liked your post {obj.post}'
+        
+class SharedPostsLikeNotificationSerializer(serializers.ModelSerializer):
+    message = serializers.SerializerMethodField()
+    class Meta:
+        model = Like_Notification_on_SharedPosts 
+        fields = ['message','id','created_at']
+        
+    def get_message(self,obj):
+            return f'{obj.liker} liked your post {obj.post}'

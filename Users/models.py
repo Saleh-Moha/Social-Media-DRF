@@ -69,7 +69,8 @@ class user_profile(models.Model):
     bio = models.TextField(max_length=400, blank=True)
     location = models.TextField(max_length=400, blank=True)
     phone_number = models.IntegerField(blank=True, null=True)  # Make it optional for testing
-
+    followers_count = models.IntegerField(default=0)
+    followings_count = models.IntegerField(default=0)
     def __str__(self):
         return str(self.user)
 
@@ -99,3 +100,6 @@ class Follow_Request(models.Model):
 
     def __str__(self):
         return f"{self.requester.username} requested to follow {self.requested.username}"
+
+
+    

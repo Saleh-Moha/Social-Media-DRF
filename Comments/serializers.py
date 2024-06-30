@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from .models import *
-from Users.serializers import CustomUserSerializer,UserSerializer
-from Users.models import CustomUser as User
+from Users.serializers import CustomUserSerializer
 from Posts.serializers import *
 
 
@@ -22,10 +21,19 @@ class CommentSharedPostsSerializers(serializers.ModelSerializer):
         model = Comment_SharedPosts
         fields = ['id','post','user','comment']
         
-class LikeCountWrittenpostsSerializer(serializers.Serializer):
-    count = serializers.IntegerField()
-    data = CommentWrittenPostsSerializers(many=True)
+class WrittenPostsCommentNotificationSerializer(serializers.ModelSerializer):
+    message = serializers.SerializerMethodField()
+    class Meta:
+        model = Comment_Notification_on_WrittenPosts
+        fields = ['message','id','created_at']
+    def get_message(self,obj):
+        return f'{obj.commenter} commented on your post :  {obj.post}'
     
-class LikeCountSharedpostsSerializer(serializers.Serializer):
-    count = serializers.IntegerField()
-    data = CommentSharedPostsSerializers(many=True)
+
+class SharedPostsCommentNotificationSerializer(serializers.ModelSerializer):
+    message = serializers.SerializerMethodField()
+    class Meta:
+        model = Comment_Notification_on_SharedPosts
+        fields = ['message','id','created_at']
+    def get_message(self,obj):
+        return f'{obj.commenter} commented on your post {obj.post}'

@@ -71,8 +71,7 @@ class Written_posts_list(generics.ListAPIView):
             if not queryset.exists():
                 raise PermissionDenied("This account is private")
             return queryset
-
-
+        
         if user.id != post_owner_id:
             # Filter out private posts if the user is not the owner and not a follower
             queryset = queryset.filter(
@@ -82,7 +81,6 @@ class Written_posts_list(generics.ListAPIView):
             )
         if not queryset.exists():
             raise PermissionDenied("This account is private")
-        
         return queryset
 
 

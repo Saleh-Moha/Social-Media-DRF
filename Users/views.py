@@ -2,27 +2,19 @@ from rest_framework import generics
 from django.db.models import Q
 from .models import *
 from .serializers import *
-from rest_framework.permissions import IsAuthenticated,IsAdminUser,IsAuthenticatedOrReadOnly,AllowAny
-from rest_framework.decorators import permission_classes,api_view
+from rest_framework.permissions import IsAuthenticated
+from .permissions import IsOwnerOrReadOnly,IsOnlyOwenr
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework import status
-from django.core.mail import send_mail
-from django.conf import settings
-from rest_framework.exceptions import NotFound
-from django.shortcuts import get_object_or_404
-from .permissions import IsOwnerOrReadOnly,IsOnlyOwenr
-from rest_framework.exceptions import NotAuthenticated
-from rest_framework.exceptions import ValidationError
 
+# user profile info that he signed up with
 class User_Profile_Info(generics.RetrieveUpdateDestroyAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
     permission_classes = [IsOwnerOrReadOnly]
-    
-        
 
-
-
+# user profile info that will appear in thier profile
 class User_Profile(generics.RetrieveUpdateDestroyAPIView):
     queryset = user_profile.objects.all()
     serializer_class = UserProfileSerializer
@@ -38,21 +30,17 @@ class User_Profile(generics.RetrieveUpdateDestroyAPIView):
             )
         return user_profile.objects.filter(is_private=False)    
 
-
-
-
-
-
+# follow proccess 
+# 1- do follow function checks if the account is pricate or not
 class Do_Follow(generics.CreateAPIView):
     queryset = Follow.objects.all()
     serializer_class = FollowSerializer
     permission_classes = [IsOwnerOrReadOnly]
-    
+    # the follow process
     def perform_create(self, serializer):
         follower = self.request.user
         followed_id = self.kwargs['id']
-
-
+        
         try:
             followed = CustomUser.objects.get(id=followed_id)
         except CustomUser.DoesNotExist:
@@ -63,20 +51,42 @@ class Do_Follow(generics.CreateAPIView):
             if Follow_Request.objects.filter(requester=follower, requested=followed, status='pending').exists():
                 raise ValidationError("Follow request already sent")
             Follow_Request.objects.create(requester=follower, requested=followed)
-            return Response("Follow request sent", status=status.HTTP_201_CREATED)
+            raise ValidationError(f"Follow request sent to {followed}")
         else:
             # Directly create a follow relationship
             if Follow.objects.filter(follower=follower, followed=followed).exists():
                 raise ValidationError("Already following this user")
             serializer.save(follower=follower, followed=followed)
-        
+
+# 3- list the requests
+class Follow_Requests(generics.ListAPIView):
+    serializer_class = FollowRequestsSerializer
+    
+    def get_queryset(self):
+        user = self.request.user 
+        return Follow_Request.objects.filter(requested=user)
             
+        
+    def list(self, request, *args, **kwargs):
+        user = self.request.user 
+        if not user.is_authenticated:
+            return Response({"detailed":"you don not have and account signup first"},status=status.HTTP_401_UNAUTHORIZED)
+        queryset = self.get_queryset()
+        if not queryset.exists():
+            return Response('there is no follow requests', status=status.HTTP_404_NOT_FOUND)
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)
 
-class FollowRequest(generics.RetrieveUpdateDestroyAPIView):
+
+
+
+
+# 3- handle the follow requests  
+class Follow_Request_Handeling(generics.RetrieveUpdateDestroyAPIView):
     queryset = Follow_Request.objects.all()
-    serializer_class = FollowRequestSerializer
-    permission_classes = [IsOnlyOwenr]
-
+    serializer_class = FollowRequestHandelingSerializer
+    permission_classes = [IsOnlyOwenr]  
+    # checks the status of the request  
     def perform_update(self, serializer):
         instance = self.get_object()
         # When a request is accepted, create a follow relationship and delete the follow request
@@ -86,22 +96,20 @@ class FollowRequest(generics.RetrieveUpdateDestroyAPIView):
         else:
             serializer.save()
 
-
+# get the followers data 
 class Followers(generics.ListAPIView):
     queryset = Follow.objects.all()
-    serializer_class = Followersserializer
+    serializer_class = FollowersSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
         return Follow.objects.filter(followed=user)
-    
 
-        
-    
+#  get the followings daata
 class Following(generics.ListAPIView):
     queryset = Follow.objects.all()
-    serializer_class = Followingserializer
+    serializer_class = FollowingSerializer
     permission_classes = [IsAuthenticated]  
 
     def get_queryset(self):

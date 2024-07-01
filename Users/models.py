@@ -9,8 +9,8 @@ class CustomUserManager(BaseUserManager):
 
     def create_user(self, email,username,first_name, last_name, date_of_birth, password=None, **extra_fields):
 
-        if not email:
-            raise ValueError('The Email field must be set')
+        if not email and username:
+            raise ValueError('The Email and Username fields must be set')
         email = self.normalize_email(email)
         user = self.model(
             email=email,

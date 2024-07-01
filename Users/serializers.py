@@ -2,6 +2,7 @@ from djoser.serializers import UserCreateSerializer, UserSerializer # type: igno
 from rest_framework import serializers
 from .models import CustomUser,user_profile,Follow,Follow_Request
 
+# the serializer used to register users 
 class CustomUserCreateSerializer(UserCreateSerializer):
     class Meta:
         model = CustomUser
@@ -16,7 +17,8 @@ class CustomUserCreateSerializer(UserCreateSerializer):
             if not data.get('date_of_birth'):
                 raise serializers.ValidationError({'date_of_birth': 'This field is required.'})
             return data
-    
+
+# serilizer for user info
 class CustomUserSerializer(UserSerializer):
     class Meta:
         model = CustomUser
@@ -27,26 +29,38 @@ class UsernameSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ['username']
     
+# profile serializer
 class UserProfileSerializer(serializers.ModelSerializer):
-    user = UsernameSerializer(read_only=True)
+    user = serializers.StringRelatedField(read_only=True)
 
     class Meta:
         model = user_profile
         fields = '__all__'
       
-
+# follow process serializer
 class FollowSerializer(serializers.ModelSerializer):
-    follower = UsernameSerializer(read_only=True)
-    followed = UsernameSerializer(read_only=True)
+    message = serializers.SerializerMethodField()
     class Meta:
         model = Follow
-        fields = ['id','follower','followed','created_at']
+        fields = ['id','message','created_at']
         
-class FollowRequestSerializer(serializers.ModelSerializer):
-    # requester = UsernameSerializer(read_only=True)
-    # requested = UsernameSerializer(read_only=True)
-    message = serializers.SerializerMethodField()
+    def get_message(self,obj):
+        return f'you now follow {obj.followed.username}'
 
+# follow requests 
+class FollowRequestsSerializer(serializers.ModelSerializer):
+    message = serializers.SerializerMethodField()
+    class Meta:
+        model = Follow_Request
+        fields = ['message','id','created_at']
+    
+    def get_message(self, obj):
+        return f"{obj.requester.username} has sent you a follow request"
+
+
+# follow request handeling serializer
+class FollowRequestHandelingSerializer(serializers.ModelSerializer):
+    message = serializers.SerializerMethodField()
     class Meta:
         model = Follow_Request
         fields = ['message','id', 'status', 'created_at']
@@ -54,19 +68,16 @@ class FollowRequestSerializer(serializers.ModelSerializer):
     def get_message(self, obj):
         return f"{obj.requester.username} has sent you a follow request"
         
-
-class Followersserializer(serializers.ModelSerializer):
-    follower = UsernameSerializer(read_only=True)
+# follower serializer
+class FollowersSerializer(serializers.ModelSerializer):
+    follower = serializers.StringRelatedField(read_only=True)
     class Meta:
         model = Follow
         fields = ['follower']
 
-
-    
-        
-
-class Followingserializer(serializers.ModelSerializer):
-    followed = UsernameSerializer(read_only=True)
+# following serializer 
+class FollowingSerializer(serializers.ModelSerializer):
+    followed = serializers.StringRelatedField(read_only=True)
     class Meta:
         model = Follow
         fields = ['followed']

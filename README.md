@@ -1,3 +1,13 @@
+DRF APP using technologies like : 
+- djoser
+- rest framework
+- django filters
+- docker
+- sqllite3 => (you can use any database)
+
+
+
+
 *Users App:
     --models:
         -> custom user model which allow user to signup with the following:

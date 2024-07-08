@@ -9,6 +9,7 @@ DRF APP using technologies like :
 
 
 *Users App:
+
     --models:
         -> custom user model which allow user to signup with the following:
             - email=> which is an unique field

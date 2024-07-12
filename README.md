@@ -16,7 +16,7 @@ DRF APP using technologies like :
     
     
     --urls:
-        -> using one endpoint:
+        -> using endpoints:
             - /user-profile/{pk} => to get the data of the user
             - /user-profile-info/{pk} => to get the signup data of the user
             - /folloe/{pk} => to follow account
@@ -45,7 +45,7 @@ ___________________
         -> Shared Post Model => allow user to share post from anther user
     
     --urls:
-        -> using four endpoints:
+        -> using endpoints:
             /post => allow user to post
             /post-list/{pk} => allow user to get posts of user
             /edit-post/<int:pk> => allow user to edit thier posts
@@ -65,7 +65,7 @@ ___________________
         -> Like_Notification_on_SharedPosts => notify user when he gets a like on thier shared posts
     
     --urls:
-        -> using six endpoints:
+        -> using endpoints:
             like-written-post/<int:id>' => to like a written posts
             list-likes-on-written-post/<int:id>' => to show count and user who reacted on a written posts
             like-written-post-delete/<int:pk>' => to allow only owner of the like to delete it
@@ -87,7 +87,7 @@ ___________________
         -> Comment Notification on SharedPosts Model => get notifications if anyone commmented on your shared post
     
     --urls:
-        -> using six endpoints:
+        -> using endpoints:
             /comment-written-post/<int:id>' => to like a written posts
             /list-comment-on-written-post/<int:id>' => to show count and user who reacted on a written posts
             /delete-comment-on-written-post/<int:pk>' => to allow only owner of the like to delete it

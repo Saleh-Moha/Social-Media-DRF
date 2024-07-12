@@ -3,6 +3,7 @@ DRF APP using technologies like :
 - rest framework
 - django filters
 - docker
+- swagger
 - sqllite3 => (you can use any database)
   
 
@@ -97,4 +98,8 @@ ___________________
             /written-posts-comment-notification => get notifications when anyone comments on your post
             /shared-posts-comment-notification => get notificatios when anyone comments on your shared post
                     ____________________________________________
-
+*Swagger
+___________________
+    --urls:
+        -> using endpoints:
+             /swagger/ => to get swagger documintaion

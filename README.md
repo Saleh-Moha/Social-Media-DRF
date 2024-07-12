@@ -4,38 +4,26 @@ DRF APP using technologies like :
 - django filters
 - docker
 - sqllite3 => (you can use any database)
-
-
-
+  
 
 *Users App:
 
-    --models:
-        -> custom user model which allow user to signup with the following:
-            - email=> which is an unique field
-            - username=> also an unique field
-            - first name=> not unique but not null
-            - socend name=> not unique but not null
-            - date of birth=> not unique but not null
-            - bio=> not unique and can be null
-            - location=> not unique and can be null
-            - profile picture = can also be null
+        --models:
+            -> custom user model which allow user to signup & login
+            -> user profile model that creates an account after regiteration
+            -> follow model that allow users to follow eachothers and see the followings and followers
+            -> follow request model that send a notification for user who is private that somone follows thier account 
     
-    --views:
-        -- using class based view ==> ginircs to retrive the data of the user 
     
     --urls:
         -> using one endpoint:
-            - /user-profile/{username} => to get the data of the user
-    
-    -- Serializers:
-        -> containing tow classes:
-            - CustomUserCreateSerializer => used py djoser to signup user
-            - CustomUserSerializer=> all apps use it to show data of the user on comments,likes and profile 
-    
-    -- permissions:
-        -> create a custom permission to allow only user to edit and delete his own data and others can only show the data
-
+            - /user-profile/{pk} => to get the data of the user
+            - /user-profile-info/{pk} => to get the signup data of the user
+            - /folloe/{pk} => to follow account
+            - /follow-requests => to get all the requests if your account is private
+            - /follow-requests/{pk} => to handle each request 
+            - /followers => to get followers
+            - /followings => to get following 
         ____________________________________________
 
 *Authentication:
@@ -53,40 +41,17 @@ ___________________
 ___________________
     
     --models:
-        -> Written Posts Model:
-            - user
-            - content of the post => cannot be null
-            - image => can be null
-            - video => can be null
-            - date and time of post => auto now  
-        -> Shared Post Model:
-            - user
-            - content of the post => cannot be null
-            - date and time of post => auto now  
-            - shared from => show the main post and it owner
-
-
-    --views:
-        -- using class based view ==> ginircs to 
-            - allow user to post 
-            - allow user to share Posts
-            - allow only owner to edit thier own post
-            - allow only owner to edit thier own shared post
+        -> Written Posts Model => allow user to write their own post
+        -> Shared Post Model => allow user to share post from anther user
     
     --urls:
         -> using four endpoints:
             /post => allow user to post
-            <str:username>/<int:id>/share => allow user to share posts
-            edit-post/<int:pk> => allow user to edit thier posts
-            edit-sharedpost/<int:pk> => allow user to edit thier shared posts
-    
-    -- Serializers:
-        -> containing tow classes:
-            - WrittenPostsSerializer => dealing with all operations of writting posts
-            - SharedPostsSerializer => dealing with all operations of shared posts
-    
-    -- permissions:
-        -> create a custom permission to allow only user to edit and delete his own data and others can only show the data
+            /post-list/{pk} => allow user to get posts of user
+            /edit-post/<int:pk> => allow user to edit thier posts
+            /{username}/<int:id>/share => allow user to share posts
+            /sharedpost-list/{pk} => allow user to get shared posts of user
+            /edit-sharedpost/<int:pk> => allow user to edit thier shared posts
                     ____________________________________________
 
 
@@ -94,38 +59,21 @@ ___________________
 ___________________
     
     --models:
-        -> Like Written Posts Model:
-            - user
-            - post => extended from Posts App
-        -> Like Shared Post Model:
-            - user
-            - post => extended from Posts App
-
-
-    --views:
-        -- using class based view ==> ginircs to 
-            - allow user to like post (Written,Shared) 
-            - allow user to show the count of likes of specific post and user reacted with it 
-            - allow user to delete a like that he did on a post
+        -> Like Written Posts Model => allow user to like written posts
+        -> Like_Notification_on_WrittenPosts => notify user when he gets a like on thier posts
+        -> Like Shared Post Model => allow user to like shared posts
+        -> Like_Notification_on_SharedPosts => notify user when he gets a like on thier shared posts
     
     --urls:
         -> using six endpoints:
             like-written-post/<int:id>' => to like a written posts
-            like-written-post-list/<int:id>' => to show count and user who reacted on a written posts
+            list-likes-on-written-post/<int:id>' => to show count and user who reacted on a written posts
             like-written-post-delete/<int:pk>' => to allow only owner of the like to delete it
             like-shared-post/<int:id>' => to like a shared posts
-            like-shared-post-list/<int:id> => to show count and user who reacted on a shared posts
+            list-likes-on-shared-post/<int:id> => to show count and user who reacted on a shared posts
             like-shared-post-delete/<int:pk> => to allow only owner of the like to delete it
-    
-    -- Serializers:
-        -> containing four classes:
-            - LikeWrittenPostsSerializers => dealing with likes on written posts
-            - LikeSharedPostsSerializers=> dealing with likes on shared posts
-            - LikeCountWrittenpostsSerializer=> show the numbers of users who reacted with this post
-            - LikeCountSharedpostsSerializer=> show the numbers of users who reacted with this post
-    
-    -- permissions:
-        -> create a custom permission to allow only user to edit and delete his own data and others can only show the data
+            written-posts-likes-notifications => get a notification of any like on your written posts
+            shared-posts-likes-notifications =>  get a notification of any like on your shard posts
                     ____________________________________________
 
 
@@ -133,38 +81,20 @@ ___________________
 ___________________
     
     --models:
-        -> Comment Written Posts Model:
-            - user
-            - post => extended from Posts App
-            - comment => the comment that will appear in the post
-        -> Comment Shared Post Model:
-            - user
-            - post => extended from Posts App
-            - commment => the comment that will appear in the post
-
-    --views:
-        -- using class based view ==> ginircs to 
-            - allow user to comment on posts (Written,Shared) 
-            - allow user to show the count of comments of specific post and user reacted with it 
-            - allow user to delete a comment that he did on a post
+        -> Comment Written Posts Model => allow you to comment on any post
+        -> Comment Shared Post Model => allow you to comment on any shard post
+        -> Comment Notification on WrittenPosts Model => get notifications if anyone commmented on your post
+        -> Comment Notification on SharedPosts Model => get notifications if anyone commmented on your shared post
     
     --urls:
         -> using six endpoints:
-            comment-written-post/<int:id>' => to like a written posts
-            comment-written-post-list/<int:id>' => to show count and user who reacted on a written posts
-            comment-written-post-delete/<int:pk>' => to allow only owner of the like to delete it
-            comment-shared-post/<int:id>' => to like a shared posts
-            comment-shared-post-list/<int:id> => to show count and user who reacted on a shared posts
-            comment-shared-post-delete/<int:pk> => to allow only owner of the like to delete it
-    
-    -- Serializers:
-        -> containing four classes:
-            - CommentWrittenPostsSerializers => dealing with likes on written posts
-            - CommentSharedPostsSerializers=> dealing with likes on shared posts
-            - CommentCountWrittenpostsSerializer=> show the numbers of users who reacted with this post
-            - CommentCountSharedpostsSerializer=> show the numbers of users who reacted with this post
-    
-    -- permissions:
-        -> create a custom permission to allow only user to edit and delete his own data and others can only show the data
-                    ____________________________________________ 
+            /comment-written-post/<int:id>' => to like a written posts
+            /list-comment-on-written-post/<int:id>' => to show count and user who reacted on a written posts
+            /delete-comment-on-written-post/<int:pk>' => to allow only owner of the like to delete it
+            /comment-shared-post/<int:id>' => to like a shared posts
+            /list-comment-on-shared-post/<int:id> => to show count and user who reacted on a shared posts
+            /delete-comment-on-shared-post/<int:pk> => to allow only owner of the like to delete it
+            /written-posts-comment-notification => get notifications when anyone comments on your post
+            /shared-posts-comment-notification => get notificatios when anyone comments on your shared post
+                    ____________________________________________
 

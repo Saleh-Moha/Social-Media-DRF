@@ -1,3 +1,5 @@
+Social Media App V1
+--------------------
 DRF APP using technologies like : 
 - djoser
 - rest framework
